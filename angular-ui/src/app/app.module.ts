@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { MatCardModule } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
@@ -25,7 +26,8 @@ import { ChatModule } from './chat/chat.module';
   ],
   imports: [
     BrowserModule,
-    ChatModule
+    ChatModule,
+    MatCardModule
   ],
   providers: [],
   bootstrap: [AppComponent]

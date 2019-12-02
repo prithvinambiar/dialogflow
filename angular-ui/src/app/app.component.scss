@@ -13,3 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+.app {
+  width: 400px;
+  margin-left: 20px;
+}
+
+#brand {
+  border-bottom: 1px solid #b1b1b1;
+  border-radius: 5px;
+  height: 70px;
+  margin-bottom: 15px;
+  display: grid;
+  background-color: #000000
+}
+#brand_image {
+  height: 40px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}

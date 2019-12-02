@@ -14,23 +14,33 @@
   limitations under the License.
 -->
 
-<h1>HR Chatbot</h1>
-
-
-
 <ng-container *ngFor="let message of messages | async">
 
-  <div class="message" [ngClass]="{ 'from': message.sentBy === 'bot',
+  <div class="message" *ngIf="message.type === 0" [ngClass]="{ 'from': message.sentBy === 'bot',
                                     'to':   message.sentBy === 'user' }">
     {{ message.content }}
   </div>
-
+  <mat-card class="example-card" *ngIf="message.type === 1">
+    <mat-card-header>
+      <mat-card-title>{{ message.content.title }}</mat-card-title>
+    </mat-card-header>
+    <div class="img-container">
+      <img class="product-img" mat-card-image src="{{message.content.imageUrl}}" alt="Photo of the product">
+    </div>
+    <mat-card-content>
+      <p>
+          {{ message.content.subtitle }}
+      </p>
+    </mat-card-content>
+    <mat-card-actions>
+      <a href="{message.content.buttons[0].postback}}">
+        <button mat-button class="buy-now-btn">Buy Now</button>
+      </a>
+    </mat-card-actions>
+  </mat-card>
 </ng-container>
-
-
-<label for="nameField">How can we help you?</label>
-
+<div class="message from" *ngIf="inProgress">...</div>
 
 <input [(ngModel)]="formValue" (keyup.enter)="sendMessage()" type="text"><br>
 
-<button (click)="sendMessage()">Send</button>
+<button class="send-msg-btn" (click)="sendMessage()">Send</button>

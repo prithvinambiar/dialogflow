@@ -21,14 +21,15 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 export class Message {
-  constructor(public content: string, public sentBy: string) {}
+  constructor(public content: string | object, public sentBy: string, public type: number) {}
 }
 
 @Injectable()
 export class ChatService {
 
   readonly token = environment.dialogflow.angularBot;
-  readonly client = new ApiAiClient({ accessToken: this.token });
+  readonly client: any = new ApiAiClient({ accessToken: this.token });
+  i = 0;
 
   conversation = new BehaviorSubject<Message[]>([]);
 
@@ -36,14 +37,24 @@ export class ChatService {
 
   // Sends and receives messages via DialogFlow
   converse(msg: string) {
-    const userMessage = new Message(msg, 'user');
+    const userMessage = new Message(msg, 'user', 0);
     this.update(userMessage);
+    this.i++;
 
     return this.client.textRequest(msg)
                .then(res => {
-                  const speech = res.result.fulfillment.speech;
-                  const botMessage = new Message(speech, 'bot');
-                  this.update(botMessage);
+                  for(const message of res.result.fulfillment.messages) {
+                    const type = message.type;
+                    let botMessage = null
+                    if(type === 0)
+                      botMessage = new Message(message.speech, 'bot', type);
+                    if(type === 1) {
+                      botMessage = new Message(message, 'bot', type)
+                    }
+                    if (botMessage) {
+                      this.update(botMessage);
+                    }
+                  }
                });
   }
 
@@ -51,6 +62,7 @@ export class ChatService {
 
   // Adds message to source
   update(msg: Message) {
+    if(this.i==0) {return;}
     this.conversation.next([msg]);
   }
 

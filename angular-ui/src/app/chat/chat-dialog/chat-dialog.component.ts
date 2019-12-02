@@ -27,18 +27,29 @@ export class ChatDialogComponent implements OnInit {
 
   messages: Observable<Message[]>;
   formValue: string;
+  inProgress: boolean;
 
   constructor(public chat: ChatService) { }
 
   ngOnInit() {
     // appends to array after each new message is added to feedSource
     this.messages = this.chat.conversation.asObservable()
-        .scan((acc, val) => acc.concat(val) );
+        .scan((acc, val) => {
+          if(val[0].sentBy === 'bot') {
+            this.inProgress = false;
+          }
+          return acc.concat(val);
+        });
+    this._sendMessage('hi');
   }
 
   sendMessage() {
-    this.chat.converse(this.formValue);
+    this._sendMessage(this.formValue);
     this.formValue = '';
   }
 
+  _sendMessage(message) {
+    this.inProgress = true;
+    this.chat.converse(message);
+  }
 }
